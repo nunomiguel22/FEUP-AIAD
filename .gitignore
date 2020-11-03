@@ -147,4 +147,8 @@ hs_err_pid*
 .history
 .ionide
 
+#others
+*.log.1
+bin/
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,intellij,java
