@@ -44,4 +44,8 @@ public class Vec2 {
         return false;
     }
 
+    public static Vec2 of(double x, double y) {
+        return new Vec2(x, y);
+    }
+
 }

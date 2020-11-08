@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import commons.Constants;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
@@ -17,14 +18,12 @@ import jade.domain.FIPAException;
 //import environment.Vec2;
 
 public class SwingGUI extends Agent {
-    private final int width = 600;
-    private final int height = 600;
 
     private JFrame frame;
 
     public SwingGUI() {
-        frame = new JFrame("Mars Explorer");
-        frame.setMinimumSize(new Dimension(width, height));
+        frame = new JFrame("Planet Explorer");
+        frame.setMinimumSize(new Dimension(Constants.worldWidth, Constants.worldHeight));
         frame.getContentPane().setBackground(new Color(210, 180, 140));
         frame.setVisible(true);
 
@@ -40,7 +39,7 @@ public class SwingGUI extends Agent {
         dfd.setName(getAID());
 
         ServiceDescription sd = new ServiceDescription();
-        sd.setType("Transporter");
+        sd.setType("GUI");
         sd.setName(getLocalName());
         dfd.addServices(sd);
 
