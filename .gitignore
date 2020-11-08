@@ -2,7 +2,6 @@
 APDescription.txt
 MTPs-Main-Container.txt
 
-
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,intellij,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,intellij,java
 
@@ -149,5 +148,21 @@ hs_err_pid*
 # Ignore all local history of files
 .history
 .ionide
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
+.mvn/wrapper/maven-wrapper.jar
+planet-explorer.iml
+planet-explorer.ipr
+planet-explorer.iws
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,intellij,java

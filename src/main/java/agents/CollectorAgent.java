@@ -1,4 +1,4 @@
-package MarsExplorer.agents;
+package agents;
 
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -6,14 +6,14 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 
-public class ExplorerAgent extends Agent {
+public class CollectorAgent extends Agent {
     @Override
     protected void setup() {
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
 
         ServiceDescription sd = new ServiceDescription();
-        sd.setType("explorer");
+        sd.setType("collector");
         sd.setName(getLocalName());
         dfd.addServices(sd);
 
@@ -28,4 +28,5 @@ public class ExplorerAgent extends Agent {
     protected void takeDown() {
         super.takeDown();
     }
+
 }

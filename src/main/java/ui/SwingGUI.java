@@ -1,4 +1,4 @@
-package MarsExplorer.ui;
+package ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,7 +14,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 
-//import MarsExplorer.environment.Vec2;
+//import environment.Vec2;
 
 public class SwingGUI extends Agent {
     private final int width = 600;

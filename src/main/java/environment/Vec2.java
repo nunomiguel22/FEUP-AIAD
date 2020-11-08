@@ -1,4 +1,4 @@
-package MarsExplorer.environment;
+package environment;
 
 public class Vec2 {
     private double x, y;

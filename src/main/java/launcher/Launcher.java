@@ -1,9 +1,9 @@
-package MarsExplorer;
+package launcher;
 
-import MarsExplorer.agents.TransporterAgent;
-import MarsExplorer.environment.Vec2;
-import MarsExplorer.ui.SwingGUI;
-import MarsExplorer.ui.TransporterStyle;
+import agents.TransporterAgent;
+import environment.Vec2;
+import ui.SwingGUI;
+import ui.TransporterStyle;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
