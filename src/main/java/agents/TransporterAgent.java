@@ -1,6 +1,6 @@
-package MarsExplorer.agents;
+package agents;
 
-import MarsExplorer.environment.Vec2;
+import environment.Vec2;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;

@@ -1,9 +1,9 @@
-package MarsExplorer.ui;
+package ui;
 
 import javax.swing.JComponent;
 
-import MarsExplorer.agents.TransporterAgent;
-import MarsExplorer.environment.Vec2;
+import agents.TransporterAgent;
+import environment.Vec2;
 
 import java.awt.Color;
 import java.awt.Graphics;

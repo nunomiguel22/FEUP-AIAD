@@ -1,4 +1,4 @@
-package MarsExplorer.environment;
+package environment;
 
 public class Vec2 {
     private double x, y;
@@ -42,6 +42,10 @@ public class Vec2 {
             return true;
 
         return false;
+    }
+
+    public static Vec2 of(double x, double y) {
+        return new Vec2(x, y);
     }
 
 }
