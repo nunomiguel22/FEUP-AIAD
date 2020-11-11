@@ -3,10 +3,9 @@ package launcher;
 import agents.ExplorerAgent;
 import agents.TransporterAgent;
 import commons.Constants;
+import environment.Map;
 import environment.Vec2;
-import ui.ExplorerStyle;
 import ui.SwingGUI;
-import ui.TransporterStyle;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -23,31 +22,37 @@ public class Launcher {
 
         ContainerController container = runtime.createMainContainer(profile);
 
+        Map map = new Map("maps/mars.txt");
+
         try {
-            launchAgents(container);
+            launchAgents(container, map);
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
 
     }
 
-    public static void launchAgents(ContainerController container) throws StaleProxyException {
+    public static void launchAgents(ContainerController container, Map map) throws StaleProxyException {
 
         try {
             container.acceptNewAgent("rma", new rma()).start();
             // Init Swing Gui
-            SwingGUI gui = new SwingGUI();
+            SwingGUI gui = new SwingGUI(map);
             container.acceptNewAgent("swing", gui).start();
 
-            //Testing Transporter
-            TransporterAgent tp = new TransporterAgent(new Vec2(100, 100));
-            container.acceptNewAgent("TPAgent", tp).start();
-            gui.addComponent(new TransporterStyle(tp));
+            // TEMPORARY
 
-            //Add explorer agent
-            ExplorerAgent explorerAgent = new ExplorerAgent(Vec2.of(Constants.explorerStartXPos, Constants.explorerStartYPos));
+            // Testing Transporter
+            TransporterAgent tp = new TransporterAgent(new Vec2(10, 10), map.getBounds());
+            gui.addStyle(tp);
+            container.acceptNewAgent("TPAgent", tp).start();
+
+            // Add explorer agent
+
+            ExplorerAgent explorerAgent = new ExplorerAgent(
+                    Vec2.of(Constants.explorerStartXPos, Constants.explorerStartYPos));
+            gui.addStyle(explorerAgent);
             container.acceptNewAgent("Explorer", explorerAgent).start();
-            gui.addComponent(new ExplorerStyle(explorerAgent));
 
         } catch (StaleProxyException e) {
             e.printStackTrace();

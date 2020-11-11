@@ -1,5 +1,7 @@
 package agents;
 
+import java.awt.Graphics;
+import java.awt.Color;
 import agents.behaviours.ExploreBehaviour;
 import commons.Constants;
 import environment.Vec2;
@@ -7,9 +9,10 @@ import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import ui.SwingStyle;
 import jade.domain.FIPAException;
 
-public class ExplorerAgent extends Agent {
+public class ExplorerAgent extends Agent implements SwingStyle {
 
     private Vec2 position;
 
@@ -47,5 +50,17 @@ public class ExplorerAgent extends Agent {
     @Override
     protected void takeDown() {
         super.takeDown();
+    }
+
+    @Override
+    public void draw(Graphics g, Vec2 scale) {
+        Vec2 pos = this.getPosition();
+        int x = (int) (pos.getX() * scale.getX());
+        int y = Constants.worldHeight - (int) (pos.getY() * scale.getY());
+
+        g.setColor(Color.BLUE);
+        g.fillOval(x, y, 10, 10);
+        g.setColor(Color.WHITE);
+        g.drawOval(x, y, 10, 10);
     }
 }
