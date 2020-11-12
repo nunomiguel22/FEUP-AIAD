@@ -43,6 +43,10 @@ public class SwingGUI extends Agent {
         panel.addStyle(style);
     }
 
+    public void removeStyle(SwingStyle style) {
+        panel.removeStyle(style);
+    }
+
     @Override
     protected void setup() {
         DFAgentDescription dfd = new DFAgentDescription();
@@ -80,6 +84,10 @@ public class SwingGUI extends Agent {
 
         public void addStyle(SwingStyle style) {
             styles.add(style);
+        }
+
+        public void removeStyle(SwingStyle style) {
+            styles.remove(style);
         }
 
         @Override

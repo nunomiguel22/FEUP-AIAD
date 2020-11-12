@@ -7,6 +7,7 @@ import agents.ExplorerAgent;
 import agents.TransporterAgent;
 import commons.Constants;
 import environment.Map;
+import environment.Resource;
 import environment.Vec2;
 import ui.SwingGUI;
 import jade.core.Profile;
@@ -41,7 +42,13 @@ public class Launcher {
             container.acceptNewAgent("rma", new rma()).start();
             // Init Swing Gui
             SwingGUI gui = new SwingGUI(map);
+            map.setGUI(gui);
             container.acceptNewAgent("swing", gui).start();
+
+            // Add resources to gui
+            List<Resource> rscr = map.getResources();
+            for (Resource resource : rscr)
+                gui.addStyle(resource);
 
             // Add Base Agent
             BaseAgent base = new BaseAgent(map.getBaseCoords());
@@ -50,7 +57,7 @@ public class Launcher {
 
             List<Vec2> tpCoords = map.getTransporterCoords();
             for (int i = 0; i < tpCoords.size(); ++i) {
-                TransporterAgent tp = new TransporterAgent(tpCoords.get(i), map.getBounds());
+                TransporterAgent tp = new TransporterAgent(tpCoords.get(i), map);
                 gui.addStyle(tp);
                 container.acceptNewAgent("TPAgent" + String.valueOf(i), tp).start();
             }
@@ -58,7 +65,7 @@ public class Launcher {
             // Add explorer agent
 
             ExplorerAgent explorerAgent = new ExplorerAgent(
-                    Vec2.of(Constants.explorerStartXPos, Constants.explorerStartYPos));
+                    Vec2.of(Constants.explorerStartXPos, Constants.explorerStartYPos), map);
             gui.addStyle(explorerAgent);
             container.acceptNewAgent("Explorer", explorerAgent).start();
 

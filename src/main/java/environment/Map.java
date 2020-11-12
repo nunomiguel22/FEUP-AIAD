@@ -4,24 +4,30 @@ import java.awt.Color;
 import java.io.*;
 import java.util.ArrayList;
 
+import ui.SwingGUI;
+
 public class Map {
     private Vec2 bounds;
     private Vec2 baseCoord;
     private ArrayList<Vec2> tpCoord;
+    private ArrayList<Resource> resources;
     private Color bgColor;
+    private SwingGUI gui;
 
     public Map(String filepath) {
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(new File(filepath)));
             readHeader(reader);
-            String line = "";
+            String line;
             while (true) {
                 line = reader.readLine();
                 if (line == null)
                     break;
                 if (line.equals("Transporters"))
-                    readTransporters(reader, line);
+                    line = readTransporters(reader);
+                if (line.equals("Resources"))
+                    line = readResources(reader);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -55,21 +61,37 @@ public class Map {
         this.baseCoord = new Vec2(baseX, baseY);
     }
 
-    private void readTransporters(BufferedReader reader, String line) throws IOException {
+    private String readTransporters(BufferedReader reader) throws IOException {
         tpCoord = new ArrayList<Vec2>();
-
+        String line;
         while (true) {
             line = reader.readLine();
 
             if (line == null || line.equals("Collectors") || line.equals("Resources"))
-                return;
+                return line;
 
             String[] splitLine = line.split(" ");
             int xCoord = Integer.parseInt(splitLine[0]);
             int yCoord = Integer.parseInt(splitLine[1]);
             tpCoord.add(new Vec2(xCoord, yCoord));
         }
+    }
 
+    private String readResources(BufferedReader reader) throws IOException {
+        resources = new ArrayList<Resource>();
+        String line;
+        while (true) {
+            line = reader.readLine();
+
+            if (line == null || line.equals("Collectors") || line.equals("Transporters"))
+                return line;
+
+            String[] splitLine = line.split(" ");
+            int xCoord = Integer.parseInt(splitLine[0]);
+            int yCoord = Integer.parseInt(splitLine[1]);
+            int amount = Integer.parseInt(splitLine[2]);
+            resources.add(new Resource(new Vec2(xCoord, yCoord), amount));
+        }
     }
 
     public Vec2 getBaseCoords() {
@@ -78,6 +100,19 @@ public class Map {
 
     public ArrayList<Vec2> getTransporterCoords() {
         return this.tpCoord;
+    }
+
+    public ArrayList<Resource> getResources() {
+        return this.resources;
+    }
+
+    public void removeResource(Resource resource) {
+        this.resources.remove(resource);
+        this.gui.removeStyle(resource);
+    }
+
+    public void setGUI(SwingGUI gui) {
+        this.gui = gui;
     }
 
     public Vec2 getBounds() {

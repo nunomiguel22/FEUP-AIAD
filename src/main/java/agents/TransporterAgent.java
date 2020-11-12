@@ -11,19 +11,22 @@ import java.awt.Graphics;
 
 import agents.behaviours.DrivingBehaviour;
 import commons.Constants;
+import environment.Map;
 import environment.Vec2;
 import ui.SwingStyle;
 
 public class TransporterAgent extends Agent implements SwingStyle {
     static final long serialVersionUID = 1L;
 
+    private Map map;
     private Vec2 position;
     private Vec2 direction;
     private Vec2 bounds;
 
-    public TransporterAgent(Vec2 startPos, Vec2 bounds) {
+    public TransporterAgent(Vec2 startPos, Map map) {
+        this.map = map;
         this.position = startPos;
-        this.bounds = bounds;
+        this.bounds = map.getBounds();
         this.direction = Vec2.getRandomDirection();
     }
 

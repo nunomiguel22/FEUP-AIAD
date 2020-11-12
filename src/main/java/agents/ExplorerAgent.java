@@ -2,8 +2,11 @@ package agents;
 
 import java.awt.Graphics;
 import java.awt.Color;
+
+import agents.behaviours.DrivingBehaviour;
 import agents.behaviours.ExploreBehaviour;
 import commons.Constants;
+import environment.Map;
 import environment.Vec2;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -14,10 +17,16 @@ import jade.domain.FIPAException;
 
 public class ExplorerAgent extends Agent implements SwingStyle {
 
+    private Map map;
     private Vec2 position;
+    private Vec2 direction;
+    private Vec2 bounds;
 
-    public ExplorerAgent(Vec2 startPosition) {
+    public ExplorerAgent(Vec2 startPosition, Map map) {
+        this.map = map;
         this.position = startPosition;
+        this.direction = Vec2.getRandomDirection();
+        this.bounds = map.getBounds();
     }
 
     public Vec2 getPosition() {
@@ -44,7 +53,7 @@ public class ExplorerAgent extends Agent implements SwingStyle {
             e.printStackTrace();
         }
 
-        addBehaviour(new ExploreBehaviour(this, Constants.explorerTickPeriod));
+        addBehaviour(new DrivingBehaviour(this, Constants.explorerTickPeriod, position, direction, bounds));
     }
 
     @Override
