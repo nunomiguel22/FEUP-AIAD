@@ -33,6 +33,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
     private Vec2 direction;
     private Vec2 bounds;
     private Vec2 destination;
+    private int destinationAmount;
     private int carrying;
 
     public TransporterAgent(Vec2 startPos, Map map) {
@@ -83,12 +84,16 @@ public class TransporterAgent extends Agent implements SwingStyle {
                     if (position.calcDistance(destination) <= 1.5) {
                         // STOP: TEMPORARY
                         direction.setVec2(new Vec2(0, 0));
+                        carrying += destinationAmount;
+                        destinationAmount = 0;
+
                         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                         String msgstr = String.format("TRANSPORT %d %d", (int) destination.getX(),
                                 (int) destination.getY());
                         msg.setContent(msgstr);
                         msg.addReceiver(new AID("Base", AID.ISLOCALNAME));
                         send(msg);
+
                         state = States.WAITING;
                     }
                 }
@@ -128,6 +133,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
                     int destX = Integer.parseInt(info[2]);
                     int destY = Integer.parseInt(info[2]);
                     destination = new Vec2(destX, destY);
+                    destinationAmount = amount;
                     direction.setVec2(Vec2.getDirection(position, destination));
                     state = States.RETRIEVING;
                 }
@@ -151,6 +157,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
                     if (destination.equals(tpLocation)) {
                         state = States.RANDOM;
                         destination = null;
+                        destinationAmount = 0;
                         direction.setVec2(Vec2.getRandomDirection());
                     }
                 }
