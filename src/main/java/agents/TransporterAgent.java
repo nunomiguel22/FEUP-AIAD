@@ -35,6 +35,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
     private Vec2 destination;
     private int destinationAmount;
     private int carrying;
+    private int transportedAmount;
 
     public TransporterAgent(Vec2 startPos, Map map) {
         this.map = map;
@@ -66,6 +67,20 @@ public class TransporterAgent extends Agent implements SwingStyle {
         addBehaviour(new ListeningBehaviour());
     }
 
+    private void goToBase() {
+        destination = map.getBaseCoords();
+        direction.setVec2(Vec2.getDirection(position, destination));
+        state = States.DELIVERING;
+        destinationAmount = 0;
+    }
+
+    private void startPatrol() {
+        state = States.RANDOM;
+        destination = null;
+        destinationAmount = 0;
+        direction.setVec2(Vec2.getRandomDirection());
+    }
+
     private class TransporterBehaviour extends TickerBehaviour {
         private static final long serialVersionUID = 1L;
 
@@ -82,11 +97,6 @@ public class TransporterAgent extends Agent implements SwingStyle {
 
                 case RETRIEVING: {
                     if (position.calcDistance(destination) <= 1.5) {
-                        // STOP: TEMPORARY
-                        direction.setVec2(new Vec2(0, 0));
-                        carrying += destinationAmount;
-                        destinationAmount = 0;
-
                         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                         String msgstr = String.format("TRANSPORT %d %d", (int) destination.getX(),
                                 (int) destination.getY());
@@ -94,9 +104,18 @@ public class TransporterAgent extends Agent implements SwingStyle {
                         msg.addReceiver(new AID("Base", AID.ISLOCALNAME));
                         send(msg);
 
-                        state = States.WAITING;
+                        goToBase();
+                    }
+                    break;
+                }
+                case DELIVERING: {
+                    if (position.calcDistance(destination) <= 1.5) {
+                        transportedAmount += carrying;
+                        carrying = 0;
+                        startPatrol();
                     }
                 }
+
                 default:
                     break;
             }
@@ -122,7 +141,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
                  */
                 if (info[0].equals("RETRIEVE")) {
                     // Check if transporter is full or already on a mission
-                    if (state.equals(States.DELIVERING) || state.equals(States.RETRIEVING))
+                    if (state.equals(States.RETRIEVING))
                         return;
 
                     int amount = Integer.parseInt(info[1]);
@@ -131,7 +150,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
                         return;
 
                     int destX = Integer.parseInt(info[2]);
-                    int destY = Integer.parseInt(info[2]);
+                    int destY = Integer.parseInt(info[3]);
                     destination = new Vec2(destX, destY);
                     destinationAmount = amount;
                     direction.setVec2(Vec2.getDirection(position, destination));
@@ -145,7 +164,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
                  * Means a transporter collected resources at X=30 and Y=50
                  */
                 if (info[0].equals("TRANSPORT")) {
-                    // Check if transporter is full or already on a mission
+                    // This message only matters for retrieving transporters
                     if (!state.equals(States.RETRIEVING))
                         return;
 
@@ -153,12 +172,13 @@ public class TransporterAgent extends Agent implements SwingStyle {
                     int destY = Integer.parseInt(info[2]);
                     Vec2 tpLocation = new Vec2(destX, destY);
 
-                    // Return to patrol if another transporter already collected
+                    // Return to delivering or patroling if there is already a tp on scene
                     if (destination.equals(tpLocation)) {
-                        state = States.RANDOM;
-                        destination = null;
-                        destinationAmount = 0;
-                        direction.setVec2(Vec2.getRandomDirection());
+                        if (carrying > 0)
+                            goToBase();
+                        else
+                            startPatrol();
+
                     }
                 }
             }
