@@ -1,9 +1,12 @@
 package agents;
 
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
 import jade.domain.FIPAException;
 
 import java.awt.Color;
@@ -16,18 +19,28 @@ import environment.Vec2;
 import ui.SwingStyle;
 
 public class TransporterAgent extends Agent implements SwingStyle {
-    static final long serialVersionUID = 1L;
+    private enum States {
+        RANDOM, RETRIEVING, DELIVERING
+    }
 
+    static final long serialVersionUID = 1L;
+    static final int capacity = 30;
+
+    private States state;
     private Map map;
     private Vec2 position;
     private Vec2 direction;
     private Vec2 bounds;
+    private Vec2 destination;
+    private int carrying;
 
     public TransporterAgent(Vec2 startPos, Map map) {
         this.map = map;
         this.position = startPos;
         this.bounds = map.getBounds();
         this.direction = Vec2.getRandomDirection();
+        this.state = States.RANDOM;
+        this.carrying = 0;
     }
 
     @Override
@@ -47,6 +60,94 @@ public class TransporterAgent extends Agent implements SwingStyle {
         }
 
         addBehaviour(new DrivingBehaviour(this, 33, position, direction, bounds));
+        addBehaviour(new TransporterBehaviour(this, 33));
+        addBehaviour(new ListeningBehaviour());
+    }
+
+    private class TransporterBehaviour extends TickerBehaviour {
+        private static final long serialVersionUID = 1L;
+
+        public TransporterBehaviour(Agent a, long period) {
+            super(a, period);
+        }
+
+        @Override
+        protected void onTick() {
+            switch (state) {
+                case RANDOM: {
+                    return;
+                }
+
+                case RETRIEVING: {
+                    if (position.calcDistance(destination) <= 1.5) {
+                        // STOP: TEMPORARY
+                        direction.setVec2(new Vec2(0, 0));
+                    }
+                }
+                default:
+                    break;
+            }
+        }
+    }
+
+    private class ListeningBehaviour extends CyclicBehaviour {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void action() {
+            ACLMessage msg = receive();
+
+            if (msg != null) {
+                String[] info = msg.getContent().split(" ");
+
+                /**
+                 * RETRIEVE MESSAGE
+                 * 
+                 * EX: "RETRIEVE 20 30 50"
+                 * 
+                 * Means to retrieve 20 resources at X=30 and Y=50
+                 */
+                if (info[0].equals("RETRIEVE")) {
+                    // Check if transporter is full or already on a mission
+                    if (state.equals(States.DELIVERING) || state.equals(States.RETRIEVING))
+                        return;
+
+                    int amount = Integer.parseInt(info[1]);
+                    // Check if transporter has enough space
+                    if (capacity - carrying < amount)
+                        return;
+
+                    int destX = Integer.parseInt(info[2]);
+                    int destY = Integer.parseInt(info[2]);
+                    destination = new Vec2(destX, destY);
+                    direction.setVec2(Vec2.getDirection(position, destination));
+                    state = States.RETRIEVING;
+                }
+                /**
+                 * TRANSPORTING MESSAGE
+                 * 
+                 * EX: "TRANSPORT 30 50"
+                 * 
+                 * Means a transporter collected resources at X=30 and Y=50
+                 */
+                if (info[0].equals("TRANSPORT")) {
+                    // Check if transporter is full or already on a mission
+                    if (!state.equals(States.RETRIEVING))
+                        return;
+
+                    int destX = Integer.parseInt(info[2]);
+                    int destY = Integer.parseInt(info[2]);
+                    Vec2 tpLocation = new Vec2(destX, destY);
+
+                    // Return to patrol if another transporter already collected
+                    if (destination.equals(tpLocation)) {
+                        state = States.RANDOM;
+                        destination = null;
+                        direction.setVec2(Vec2.getRandomDirection());
+                    }
+                }
+            }
+        }
     }
 
     @Override

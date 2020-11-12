@@ -24,7 +24,7 @@ public class DrivingBehaviour extends TickerBehaviour {
         Vec2 dir = new Vec2(1, 1);
         boolean outOfBounds = checkBounds(dir);
         if (outOfBounds) {
-            direction = Vec2.getRandomDirection();
+            direction.setVec2(Vec2.getRandomDirection());
             if (direction.getX() * dir.getX() < 0)
                 direction.setX(direction.getX() * -1);
 
