@@ -4,7 +4,9 @@ import agents.ExplorerAgent;
 import agents.TransporterAgent;
 import commons.Constants;
 import environment.Map;
+import environment.Resource;
 import environment.Vec2;
+import environment.Wharehouse;
 import ui.SwingGUI;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -48,15 +50,17 @@ public class Launcher {
             container.acceptNewAgent("TPAgent", tp).start();
 
             // Add explorer agent
-
+            Vec2 explorerStartPosition = Vec2.of(map.getWharehouse().getPosition().getX(), map.getWharehouse().getPosition().getY());
             ExplorerAgent explorerAgent = new ExplorerAgent(
-                    Vec2.of(Constants.explorerStartXPos, Constants.explorerStartYPos));
+                    explorerStartPosition, map.getBounds());
             gui.addStyle(explorerAgent);
             container.acceptNewAgent("Explorer", explorerAgent).start();
+
+            map.getResources().forEach(gui::addStyle);
+            gui.addStyle(map.getWharehouse());
 
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
-
     }
 }

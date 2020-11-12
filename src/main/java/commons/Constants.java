@@ -7,7 +7,7 @@ public class Constants {
     public static final int worldHeight = 600;
 
     //Explorer agent variables
-    public static final double explorerStartXPos = 0.0;
-    public static final double explorerStartYPos = 0.0;
-    public static final long explorerTickPeriod = 50;
+    public static final double explorerStartXPos = 350.0;
+    public static final double explorerStartYPos = 350.0;
+    public static final long explorerTickPeriod = 33;
 }

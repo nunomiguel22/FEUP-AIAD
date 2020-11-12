@@ -1,18 +1,18 @@
 package agents.behaviours;
 
-import agents.ExplorerAgent;
+import agents.AbstractAgent;
 import commons.Constants;
 import environment.Vec2;
 import jade.core.behaviours.TickerBehaviour;
 
 public class ExploreBehaviour extends TickerBehaviour {
 
-    private final ExplorerAgent explorer;
+    private final AbstractAgent agent;
     private boolean movingEast = true;
 
-    public ExploreBehaviour(ExplorerAgent a, long period) {
+    public ExploreBehaviour(AbstractAgent a, long period) {
         super(a, period);
-        explorer = a;
+        agent = a;
     }
 
     @Override
@@ -26,11 +26,11 @@ public class ExploreBehaviour extends TickerBehaviour {
     }
 
     private void moveExplorerEast() {
-        Vec2 actualPosition = this.explorer.getPosition();
+        Vec2 actualPosition = this.agent.getPosition();
         if (actualPosition.getX() < Constants.worldWidth ) {
-            explorer.setPosition(Vec2.of(actualPosition.getX() + 10.0, actualPosition.getY()));
+            agent.setPosition(Vec2.of(actualPosition.getX() + 10.0, actualPosition.getY()));
         } else if (actualPosition.getY() < Constants.worldHeight) {
-            explorer.setPosition(Vec2.of(actualPosition.getX() - 10.0, actualPosition.getY() + 10.0));
+            agent.setPosition(Vec2.of(actualPosition.getX() - 10.0, actualPosition.getY() + 10.0));
             movingEast = false;
         } else {
             myAgent.doDelete();
@@ -38,11 +38,11 @@ public class ExploreBehaviour extends TickerBehaviour {
     }
 
     private void moveExplorerWest() {
-        Vec2 actualPosition = this.explorer.getPosition();
+        Vec2 actualPosition = this.agent.getPosition();
         if (actualPosition.getX() > 0.0 ) {
-            explorer.setPosition(Vec2.of(actualPosition.getX() - 10.0, actualPosition.getY()));
+            agent.setPosition(Vec2.of(actualPosition.getX() - 10.0, actualPosition.getY()));
         } else if (actualPosition.getY() < Constants.worldHeight) {
-            explorer.setPosition(Vec2.of(actualPosition.getX() + 10.0, actualPosition.getY() + 10.0));
+            agent.setPosition(Vec2.of(actualPosition.getX() + 10.0, actualPosition.getY() + 10.0));
             movingEast = true;
         } else {
             myAgent.doDelete();

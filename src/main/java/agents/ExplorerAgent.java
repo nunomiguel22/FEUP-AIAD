@@ -2,31 +2,36 @@ package agents;
 
 import java.awt.Graphics;
 import java.awt.Color;
+
+import agents.behaviours.DrivingBehaviour;
 import agents.behaviours.ExploreBehaviour;
 import commons.Constants;
 import environment.Vec2;
-import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import ui.SwingStyle;
 import jade.domain.FIPAException;
 
-public class ExplorerAgent extends Agent implements SwingStyle {
+public class ExplorerAgent extends AbstractAgent implements SwingStyle {
 
-    private Vec2 position;
-
-    public ExplorerAgent(Vec2 startPosition) {
-        this.position = startPosition;
+    public ExplorerAgent(Vec2 startPosition, Vec2 bounds) {
+        super(startPosition, bounds);
     }
 
-    public Vec2 getPosition() {
-        return position;
-    }
+//    @Override
+//    public Vec2 getPosition() {
+//        return super.getPosition();
+//    }
 
-    public void setPosition(Vec2 position) {
-        this.position = position;
-    }
+//    @Override
+//    public Vec2 getBounds() {
+//        return super.getBounds();
+//    }
+
+//    public void setPosition(Vec2 position) {
+//        this.position = position;
+//    }
 
     @Override
     protected void setup() {
@@ -44,7 +49,7 @@ public class ExplorerAgent extends Agent implements SwingStyle {
             e.printStackTrace();
         }
 
-        addBehaviour(new ExploreBehaviour(this, Constants.explorerTickPeriod));
+        addBehaviour(new DrivingBehaviour(this, Constants.explorerTickPeriod));
     }
 
     @Override
@@ -55,8 +60,10 @@ public class ExplorerAgent extends Agent implements SwingStyle {
     @Override
     public void draw(Graphics g, Vec2 scale) {
         Vec2 pos = this.getPosition();
-        int x = (int) (pos.getX() * scale.getX());
-        int y = Constants.worldHeight - (int) (pos.getY() * scale.getY());
+//        int x = (int) (pos.getX() * scale.getX());
+//        int y = Constants.worldHeight - (int) (pos.getY() * scale.getY());
+        int x = (int) pos.getX();
+        int y = (int) pos.getY();
 
         g.setColor(Color.BLUE);
         g.fillOval(x, y, 10, 10);
