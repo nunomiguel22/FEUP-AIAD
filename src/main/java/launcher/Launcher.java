@@ -1,5 +1,8 @@
 package launcher;
 
+import java.util.List;
+
+import agents.BaseAgent;
 import agents.ExplorerAgent;
 import agents.TransporterAgent;
 import commons.Constants;
@@ -40,12 +43,17 @@ public class Launcher {
             SwingGUI gui = new SwingGUI(map);
             container.acceptNewAgent("swing", gui).start();
 
-            // TEMPORARY
+            // Add Base Agent
+            BaseAgent base = new BaseAgent(map.getBaseCoords());
+            gui.addStyle(base);
+            container.acceptNewAgent("BaseAgent", base).start();
 
-            // Testing Transporter
-            TransporterAgent tp = new TransporterAgent(new Vec2(10, 10), map.getBounds());
-            gui.addStyle(tp);
-            container.acceptNewAgent("TPAgent", tp).start();
+            List<Vec2> tpCoords = map.getTransporterCoords();
+            for (int i = 0; i < tpCoords.size(); ++i) {
+                TransporterAgent tp = new TransporterAgent(tpCoords.get(i), map.getBounds());
+                gui.addStyle(tp);
+                container.acceptNewAgent("TPAgent" + String.valueOf(i), tp).start();
+            }
 
             // Add explorer agent
 

@@ -3,15 +3,11 @@ package ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import commons.Constants;
-import environment.Map;
-import environment.Vec2;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
@@ -19,7 +15,10 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 
-//import environment.Vec2;
+import commons.Constants;
+import java.util.ArrayList;
+import environment.Map;
+import environment.Vec2;
 
 public class SwingGUI extends Agent {
     static final long serialVersionUID = 123L;
@@ -37,6 +36,7 @@ public class SwingGUI extends Agent {
         panel.setBackground(new Color(210, 180, 140));
         frame.setMinimumSize(new Dimension(Constants.worldWidth + 100, Constants.worldHeight + 100));
         frame.getContentPane().add(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void addStyle(SwingStyle style) {
