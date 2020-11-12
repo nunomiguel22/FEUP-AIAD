@@ -3,6 +3,7 @@ package launcher;
 import java.util.List;
 
 import agents.BaseAgent;
+import agents.CollectorAgent;
 import agents.ExplorerAgent;
 import agents.TransporterAgent;
 import commons.Constants;
@@ -55,6 +56,7 @@ public class Launcher {
             gui.addStyle(base);
             container.acceptNewAgent("Base", base).start();
 
+            // Add transporter agents
             List<Vec2> tpCoords = map.getTransporterCoords();
             for (int i = 0; i < tpCoords.size(); ++i) {
                 String name = "TPAgent" + String.valueOf(i);
@@ -65,12 +67,21 @@ public class Launcher {
             }
 
             // Add explorer agent
-
             ExplorerAgent explorerAgent = new ExplorerAgent(
                     Vec2.of(Constants.explorerStartXPos, Constants.explorerStartYPos), map);
             gui.addStyle(explorerAgent);
             base.registerAgent("Explorer");
             container.acceptNewAgent("Explorer", explorerAgent).start();
+
+            // Add collector agents
+            List<Vec2> collectorCoords = map.getCollectorCoords();
+            for (int i = 0; i < collectorCoords.size(); ++i) {
+                String name = "Collector" + i;
+                CollectorAgent cla = new CollectorAgent(collectorCoords.get(i), map);
+                gui.addStyle(cla);
+                base.registerAgent(name);
+                container.acceptNewAgent(name, cla).start();
+            }
 
         } catch (StaleProxyException e) {
             e.printStackTrace();
