@@ -35,4 +35,8 @@ public class Resource implements SwingStyle {
     public int getAmount() {
         return this.amount;
     }
+
+    public Vec2 getPosition() {
+        return position;
+    }
 }

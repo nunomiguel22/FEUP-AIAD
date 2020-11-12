@@ -55,6 +55,17 @@ public class Launcher {
             gui.addStyle(base);
             container.acceptNewAgent("Base", base).start();
 
+            // Add explorer agents
+            int explorers = map.getExplorerCoords().size();
+            for (Vec2 e : map.getExplorerCoords()) {
+                ExplorerAgent explorerAgent = new ExplorerAgent(
+                        Vec2.of(e.getX(), e.getY()), map);
+                gui.addStyle(explorerAgent);
+                String name = "Explorer" + explorers--;
+                base.registerAgent(name);
+                container.acceptNewAgent(name, explorerAgent).start();
+            }
+
             List<Vec2> tpCoords = map.getTransporterCoords();
             for (int i = 0; i < tpCoords.size(); ++i) {
                 String name = "TPAgent" + String.valueOf(i);
@@ -64,13 +75,6 @@ public class Launcher {
                 container.acceptNewAgent(name, tp).start();
             }
 
-            // Add explorer agent
-
-            ExplorerAgent explorerAgent = new ExplorerAgent(
-                    Vec2.of(Constants.explorerStartXPos, Constants.explorerStartYPos), map);
-            gui.addStyle(explorerAgent);
-            base.registerAgent("Explorer");
-            container.acceptNewAgent("Explorer", explorerAgent).start();
 
         } catch (StaleProxyException e) {
             e.printStackTrace();
