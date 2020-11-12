@@ -1,5 +1,6 @@
 package agents;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
@@ -20,7 +21,7 @@ import ui.SwingStyle;
 
 public class TransporterAgent extends Agent implements SwingStyle {
     private enum States {
-        RANDOM, RETRIEVING, DELIVERING
+        RANDOM, RETRIEVING, DELIVERING, WAITING
     }
 
     static final long serialVersionUID = 1L;
@@ -82,6 +83,13 @@ public class TransporterAgent extends Agent implements SwingStyle {
                     if (position.calcDistance(destination) <= 1.5) {
                         // STOP: TEMPORARY
                         direction.setVec2(new Vec2(0, 0));
+                        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+                        String msgstr = String.format("TRANSPORT %d %d", (int) destination.getX(),
+                                (int) destination.getY());
+                        msg.setContent(msgstr);
+                        msg.addReceiver(new AID("Base", AID.ISLOCALNAME));
+                        send(msg);
+                        state = States.WAITING;
                     }
                 }
                 default:
