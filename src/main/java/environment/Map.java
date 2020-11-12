@@ -10,6 +10,7 @@ public class Map {
     private Vec2 bounds;
     private Vec2 baseCoord;
     private ArrayList<Vec2> tpCoord;
+    private ArrayList<Vec2> collectorCoord;
     private ArrayList<Resource> resources;
     private Color bgColor;
     private SwingGUI gui;
@@ -26,6 +27,8 @@ public class Map {
                     break;
                 if (line.equals("Transporters"))
                     line = readTransporters(reader);
+                if (line.equals("Collectors"))
+                    line = readCollectors(reader);
                 if (line.equals("Resources"))
                     line = readResources(reader);
             }
@@ -77,6 +80,22 @@ public class Map {
         }
     }
 
+    private String readCollectors(BufferedReader reader) throws IOException {
+        collectorCoord = new ArrayList<>();
+        String line;
+        while (true) {
+            line = reader.readLine();
+
+            if (line == null || line.equals("Resources"))
+                return line;
+
+            String[] splitLine = line.split(" ");
+            int xCoord = Integer.parseInt(splitLine[0]);
+            int yCoord = Integer.parseInt(splitLine[1]);
+            collectorCoord.add(new Vec2(xCoord, yCoord));
+        }
+    }
+
     private String readResources(BufferedReader reader) throws IOException {
         resources = new ArrayList<Resource>();
         String line;
@@ -100,6 +119,10 @@ public class Map {
 
     public ArrayList<Vec2> getTransporterCoords() {
         return this.tpCoord;
+    }
+
+    public ArrayList<Vec2> getCollectorCoords() {
+        return collectorCoord;
     }
 
     public ArrayList<Resource> getResources() {
