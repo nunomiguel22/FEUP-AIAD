@@ -85,9 +85,13 @@ public class ExplorerAgent extends Agent implements SwingStyle {
         int y = Constants.worldHeight - (int) (pos.getY() * scale.getY());
 
         g.setColor(Color.BLUE);
-        g.fillOval(x, y, 10, 10);
+        g.fillOval(x - 5, y - 5, 10, 10);
         g.setColor(Color.WHITE);
-        g.drawOval(x, y, 10, 10);
+        g.drawOval(x - 5, y - 5, 10, 10);
+
+        final int range = (int) (Constants.explorerDistanceFromResource * scale.getX()) + 20;
+        g.setColor(Color.YELLOW);
+        g.drawOval(x - 25, y - 25, range, range);
     }
 
     private class ExploreBehaviour extends TickerBehaviour {
@@ -101,7 +105,9 @@ public class ExplorerAgent extends Agent implements SwingStyle {
         protected void onTick() {
 
             if (getResourcesAvailable().isEmpty()) {
-                if (position.equals(baseCoords)) {
+                if (position.calcDistance(baseCoords) < 0.5) {
+                    direction.setVec2(new Vec2(0, 0));
+                    removeBehaviour(this);
                     return;
                 }
                 goToBase();

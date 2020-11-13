@@ -116,9 +116,9 @@ public class BaseAgent extends Agent implements SwingStyle {
         int y = Constants.worldHeight - (int) (position.getY() * scale.getY());
 
         g.setColor(Color.GREEN);
-        g.fillRect(x, y, 15, 15);
+        g.fillRect(x - 7, y - 7, 15, 15);
         g.setColor(Color.WHITE);
-        g.drawRect(x, y, 15, 15);
+        g.drawRect(x - 7, y - 7, 15, 15);
     }
 
     public Vec2 getPosition() {

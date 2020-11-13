@@ -147,9 +147,9 @@ public class TransporterAgent extends Agent implements SwingStyle {
         int y = Constants.worldHeight - (int) (position.getY() * scale.getY());
 
         g.setColor(this.fillColor);
-        g.fillOval(x, y, 10, 10);
+        g.fillOval(x - 5, y - 5, 10, 10);
         g.setColor(Color.WHITE);
-        g.drawOval(x, y, 10, 10);
+        g.drawOval(x - 5, y - 5, 10, 10);
     }
 
     public Vec2 getPosition() {

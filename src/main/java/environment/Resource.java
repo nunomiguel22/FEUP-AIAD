@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Polygon;
 import java.io.Serializable;
 
+import commons.Constants;
+
 public class Resource implements SwingStyle, Serializable {
     static final long serialVersionUID = 1423L;
     private final int size = 5;
@@ -22,7 +24,7 @@ public class Resource implements SwingStyle, Serializable {
     public void draw(Graphics g, Vec2 scale) {
 
         int x = (int) (position.getX() * scale.getX());
-        int y = (int) (position.getY() * scale.getY());
+        int y = Constants.worldHeight - (int) (position.getY() * scale.getY());
 
         Polygon triangle = new Polygon(new int[] { x - size, x, x + size }, new int[] { y + size, y - size, y + size },
                 3);
