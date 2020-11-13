@@ -29,18 +29,15 @@ public class Launcher {
 
         Map map = new Map("maps/mars.txt");
 
-        try {
-            launchAgents(container, map);
-        } catch (StaleProxyException e) {
-            e.printStackTrace();
-        }
-
+        launchAgents(container, map);
     }
 
-    public static void launchAgents(ContainerController container, Map map) throws StaleProxyException {
+    public static void launchAgents(ContainerController container, Map map) {
 
         try {
+            // Add RMA agent to container
             container.acceptNewAgent("rma", new rma()).start();
+
             // Init Swing Gui
             SwingGUI gui = new SwingGUI(map);
             map.setGUI(gui);
@@ -56,7 +53,6 @@ public class Launcher {
             gui.addStyle(base);
             container.acceptNewAgent("Base", base).start();
 
-            // Add transporter agents
             // Add explorer agents
             int explorers = map.getExplorerCoords().size();
             for (Vec2 e : map.getExplorerCoords()) {
@@ -67,6 +63,7 @@ public class Launcher {
                 container.acceptNewAgent(name, explorerAgent).start();
             }
 
+            // Add transporter agents
             List<Vec2> tpCoords = map.getTransporterCoords();
             for (int i = 0; i < tpCoords.size(); ++i) {
                 String name = "TPAgent" + String.valueOf(i);
@@ -75,13 +72,6 @@ public class Launcher {
                 base.registerTransporter(name);
                 container.acceptNewAgent(name, tp).start();
             }
-
-            // Add explorer agent
-            ExplorerAgent explorerAgent = new ExplorerAgent(
-                    Vec2.of(Constants.explorerStartXPos, Constants.explorerStartYPos), map);
-            gui.addStyle(explorerAgent);
-            base.registerAgent("Explorer");
-            container.acceptNewAgent("Explorer", explorerAgent).start();
 
             // Add collector agents
             List<Vec2> collectorCoords = map.getCollectorCoords();
@@ -92,7 +82,6 @@ public class Launcher {
                 base.registerAgent(name);
                 container.acceptNewAgent(name, cla).start();
             }
-
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
