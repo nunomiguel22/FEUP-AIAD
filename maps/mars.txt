@@ -3,6 +3,10 @@ Header
 100 100
 Base
 50 50
+Explorers
+50 50
+50 50
+50 50
 Transporters
 30 30
 40 50

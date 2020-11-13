@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import agents.behaviours.TransportContractInitiator;
 import commons.Constants;
+import environment.Resource;
 import environment.Vec2;
 import jade.core.AID;
 import jade.core.Agent;
@@ -14,6 +16,7 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import ui.SwingStyle;
 
 public class BaseAgent extends Agent implements SwingStyle {
@@ -21,14 +24,25 @@ public class BaseAgent extends Agent implements SwingStyle {
     private Vec2 position;
 
     private ArrayList<String> agents;
+    private ArrayList<String> transporters;
 
     public BaseAgent(Vec2 pos) {
         this.position = pos;
         this.agents = new ArrayList<String>();
+        this.transporters = new ArrayList<String>();
     }
 
     public void registerAgent(String name) {
         this.agents.add(name);
+    }
+
+    public void registerTransporter(String name) {
+        registerAgent(name);
+        this.transporters.add(name);
+    }
+
+    public ArrayList<String> getTransporterList() {
+        return this.transporters;
     }
 
     public void broadcastMessage(String content, String senderName) {
@@ -62,16 +76,31 @@ public class BaseAgent extends Agent implements SwingStyle {
         addBehaviour(new ListeningBehaviour());
     }
 
+    private void initiateTransportContract(Resource res) {
+        addBehaviour(new TransportContractInitiator(this, res));
+    }
+
     private class ListeningBehaviour extends CyclicBehaviour {
-        private static final long serialVersionUID = 1L;
+        static final long serialVersionUID = 1321234L;
 
         @Override
         public void action() {
-            ACLMessage msg = receive();
+            ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 
             if (msg != null) {
-                String senderName = msg.getSender().getLocalName();
-                broadcastMessage(msg.getContent(), senderName);
+                // Initiate contract when a collector asks for retrieval
+                String[] info = msg.getContent().split(" ");
+                if (info[0].equals("RETRIEVE")) {
+                    int amount = Integer.parseInt(info[1]);
+                    int x = Integer.parseInt(info[2]);
+                    int y = Integer.parseInt(info[3]);
+                    Resource res = new Resource(new Vec2(x, y), amount);
+                    initiateTransportContract(res);
+                } else {
+                    // Broadcast to all agents
+                    String senderName = msg.getSender().getLocalName();
+                    broadcastMessage(msg.getContent(), senderName);
+                }
             }
         }
     }
@@ -87,9 +116,9 @@ public class BaseAgent extends Agent implements SwingStyle {
         int y = Constants.worldHeight - (int) (position.getY() * scale.getY());
 
         g.setColor(Color.GREEN);
-        g.fillRect(x, y, 15, 15);
+        g.fillRect(x - 7, y - 7, 15, 15);
         g.setColor(Color.WHITE);
-        g.drawRect(x, y, 15, 15);
+        g.drawRect(x - 7, y - 7, 15, 15);
     }
 
     public Vec2 getPosition() {

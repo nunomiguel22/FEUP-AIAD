@@ -9,6 +9,7 @@ import ui.SwingGUI;
 public class Map {
     private Vec2 bounds;
     private Vec2 baseCoord;
+    private ArrayList<Vec2> exCoords;
     private ArrayList<Vec2> tpCoord;
     private ArrayList<Vec2> collectorCoord;
     private ArrayList<Resource> resources;
@@ -25,6 +26,9 @@ public class Map {
                 line = reader.readLine();
                 if (line == null)
                     break;
+                if (line.equals("Explorers")) {
+                    line = readExplorers(reader);
+                }
                 if (line.equals("Transporters"))
                     line = readTransporters(reader);
                 if (line.equals("Collectors"))
@@ -62,6 +66,22 @@ public class Map {
         int baseX = Integer.parseInt(splitLine[0]);
         int baseY = Integer.parseInt(splitLine[1]);
         this.baseCoord = new Vec2(baseX, baseY);
+    }
+
+    private String readExplorers(BufferedReader reader) throws IOException {
+        exCoords = new ArrayList<Vec2>();
+        String line;
+        while (true) {
+            line = reader.readLine();
+
+            if (line.equals("Transporters"))
+                return line;
+
+            String[] splitLine = line.split(" ");
+            int xCoord = Integer.parseInt(splitLine[0]);
+            int yCoord = Integer.parseInt(splitLine[1]);
+            exCoords.add(new Vec2(xCoord, yCoord));
+        }
     }
 
     private String readTransporters(BufferedReader reader) throws IOException {
@@ -115,6 +135,10 @@ public class Map {
 
     public Vec2 getBaseCoords() {
         return this.baseCoord;
+    }
+
+    public ArrayList<Vec2> getExplorerCoords() {
+        return exCoords;
     }
 
     public ArrayList<Vec2> getTransporterCoords() {

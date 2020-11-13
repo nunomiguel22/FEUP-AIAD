@@ -3,16 +3,19 @@ package agents;
 import commons.Constants;
 import environment.Map;
 import environment.Vec2;
+import ui.SwingStyle;
+
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
-import ui.SwingStyle;
 
 import java.awt.*;
 
 public class CollectorAgent extends Agent implements SwingStyle {
+    static final long serialVersionUID = 567L;
+
     private final Map map;
     private final Vec2 position;
     private final Vec2 bounds;

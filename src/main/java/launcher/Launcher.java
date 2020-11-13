@@ -57,12 +57,22 @@ public class Launcher {
             container.acceptNewAgent("Base", base).start();
 
             // Add transporter agents
+            // Add explorer agents
+            int explorers = map.getExplorerCoords().size();
+            for (Vec2 e : map.getExplorerCoords()) {
+                ExplorerAgent explorerAgent = new ExplorerAgent(Vec2.of(e.getX(), e.getY()), map);
+                gui.addStyle(explorerAgent);
+                String name = "Explorer" + explorers--;
+                base.registerAgent(name);
+                container.acceptNewAgent(name, explorerAgent).start();
+            }
+
             List<Vec2> tpCoords = map.getTransporterCoords();
             for (int i = 0; i < tpCoords.size(); ++i) {
                 String name = "TPAgent" + String.valueOf(i);
                 TransporterAgent tp = new TransporterAgent(tpCoords.get(i), map);
                 gui.addStyle(tp);
-                base.registerAgent(name);
+                base.registerTransporter(name);
                 container.acceptNewAgent(name, tp).start();
             }
 
