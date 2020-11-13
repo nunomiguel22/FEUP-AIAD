@@ -2,7 +2,6 @@ package agents;
 
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -14,17 +13,19 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import agents.behaviours.DrivingBehaviour;
+import agents.behaviours.TransportContractResponder;
 import commons.Constants;
 import environment.Map;
+import environment.Resource;
 import environment.Vec2;
 import ui.SwingStyle;
 
 public class TransporterAgent extends Agent implements SwingStyle {
-    private enum States {
+    public enum States {
         RANDOM, RETRIEVING, DELIVERING, WAITING
     }
 
-    static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 13400L;
     static final int capacity = 30;
 
     private States state;
@@ -44,6 +45,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
         this.direction = Vec2.getRandomDirection();
         this.state = States.RANDOM;
         this.carrying = 0;
+        this.transportedAmount = 0;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
 
         addBehaviour(new DrivingBehaviour(this, 33, position, direction, bounds));
         addBehaviour(new TransporterBehaviour(this, 33));
-        addBehaviour(new ListeningBehaviour());
+        addBehaviour(new TransportContractResponder(this));
     }
 
     private void goToBase() {
@@ -104,6 +106,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
                         msg.addReceiver(new AID("Base", AID.ISLOCALNAME));
                         send(msg);
 
+                        carrying += destinationAmount;
                         goToBase();
                     }
                     break;
@@ -122,67 +125,11 @@ public class TransporterAgent extends Agent implements SwingStyle {
         }
     }
 
-    private class ListeningBehaviour extends CyclicBehaviour {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void action() {
-            ACLMessage msg = receive();
-
-            if (msg != null) {
-                String[] info = msg.getContent().split(" ");
-
-                /**
-                 * RETRIEVE MESSAGE
-                 * 
-                 * EX: "RETRIEVE 20 30 50"
-                 * 
-                 * Means to retrieve 20 resources at X=30 and Y=50
-                 */
-                if (info[0].equals("RETRIEVE")) {
-                    // Check if transporter is full or already on a mission
-                    if (state.equals(States.RETRIEVING))
-                        return;
-
-                    int amount = Integer.parseInt(info[1]);
-                    // Check if transporter has enough space
-                    if (capacity - carrying < amount)
-                        return;
-
-                    int destX = Integer.parseInt(info[2]);
-                    int destY = Integer.parseInt(info[3]);
-                    destination = new Vec2(destX, destY);
-                    destinationAmount = amount;
-                    direction.setVec2(Vec2.getDirection(position, destination));
-                    state = States.RETRIEVING;
-                }
-                /**
-                 * TRANSPORTING MESSAGE
-                 * 
-                 * EX: "TRANSPORT 30 50"
-                 * 
-                 * Means a transporter collected resources at X=30 and Y=50
-                 */
-                if (info[0].equals("TRANSPORT")) {
-                    // This message only matters for retrieving transporters
-                    if (!state.equals(States.RETRIEVING))
-                        return;
-
-                    int destX = Integer.parseInt(info[2]);
-                    int destY = Integer.parseInt(info[2]);
-                    Vec2 tpLocation = new Vec2(destX, destY);
-
-                    // Return to delivering or patroling if there is already a tp on scene
-                    if (destination.equals(tpLocation)) {
-                        if (carrying > 0)
-                            goToBase();
-                        else
-                            startPatrol();
-
-                    }
-                }
-            }
-        }
+    public void retrieve(Resource res) {
+        destination = res.getPosition();
+        destinationAmount = res.getAmount();
+        direction.setVec2(Vec2.getDirection(position, destination));
+        state = States.RETRIEVING;
     }
 
     @Override
@@ -203,5 +150,21 @@ public class TransporterAgent extends Agent implements SwingStyle {
 
     public Vec2 getPosition() {
         return this.position;
+    }
+
+    public States getTPState() {
+        return this.state;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public int getCarrying() {
+        return carrying;
+    }
+
+    public int getTotalTransportedAmount() {
+        return transportedAmount;
     }
 }

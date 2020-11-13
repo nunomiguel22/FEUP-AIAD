@@ -7,6 +7,8 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 
 public class CollectorAgent extends Agent {
+    static final long serialVersionUID = 567L;
+
     @Override
     protected void setup() {
         DFAgentDescription dfd = new DFAgentDescription();

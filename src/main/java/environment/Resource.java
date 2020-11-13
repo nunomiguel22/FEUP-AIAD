@@ -5,9 +5,10 @@ import ui.SwingStyle;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Polygon;
+import java.io.Serializable;
 
-public class Resource implements SwingStyle {
-
+public class Resource implements SwingStyle, Serializable {
+    static final long serialVersionUID = 1423L;
     private final int size = 5;
     private final Vec2 position;
     private int amount;

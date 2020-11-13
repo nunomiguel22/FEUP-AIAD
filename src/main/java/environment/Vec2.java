@@ -1,8 +1,10 @@
 package environment;
 
+import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Vec2 {
+public class Vec2 implements Serializable {
+    static final long serialVersionUID = 14224L;
     private double x, y;
 
     public Vec2(double x, double y) {

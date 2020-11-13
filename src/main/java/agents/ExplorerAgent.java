@@ -19,11 +19,12 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import ui.SwingStyle;
 import jade.domain.FIPAException;
 
 public class ExplorerAgent extends Agent implements SwingStyle {
-
+    static final long serialVersionUID = 1343400L;
     private Vec2 position;
     private Vec2 direction;
     private Vec2 bounds;
@@ -90,6 +91,7 @@ public class ExplorerAgent extends Agent implements SwingStyle {
     }
 
     private class ExploreBehaviour extends TickerBehaviour {
+        static final long serialVersionUID = 33400L;
 
         public ExploreBehaviour(ExplorerAgent a, long period) {
             super(a, period);
@@ -106,16 +108,16 @@ public class ExplorerAgent extends Agent implements SwingStyle {
                 return;
             }
 
-            Predicate<Resource> found = r -> r.getPosition().calcDistance(getPosition()) < Constants.explorerDistanceFromResource;
-            getResourcesAvailable().stream()
-                    .filter(found)
-                    .forEach(r -> {
-                        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                        String msgStr = String.format("FOUND %d %d", (int) r.getPosition().getX(), (int) r.getPosition().getY());
-                        msg.setContent(msgStr);
-                        msg.addReceiver(new AID("Base", AID.ISLOCALNAME));
-                        send(msg);
-                    });
+            Predicate<Resource> found = r -> r.getPosition()
+                    .calcDistance(getPosition()) < Constants.explorerDistanceFromResource;
+            getResourcesAvailable().stream().filter(found).forEach(r -> {
+                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+                String msgStr = String.format("FOUND %d %d", (int) r.getPosition().getX(),
+                        (int) r.getPosition().getY());
+                msg.setContent(msgStr);
+                msg.addReceiver(new AID("Base", AID.ISLOCALNAME));
+                send(msg);
+            });
 
             getResourcesAvailable().removeIf(found);
         }
@@ -125,18 +127,18 @@ public class ExplorerAgent extends Agent implements SwingStyle {
         }
     }
 
-
     private class ListeningBehaviour extends CyclicBehaviour {
+        static final long serialVersionUID = 344560L;
 
         @Override
         public void action() {
-            ACLMessage message = receive();
+            ACLMessage message = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 
             if (message != null) {
                 String[] content = message.getContent().split(" ");
                 if (content[0].equals("FOUND")) {
-                    resourcesAvailable.removeIf(r ->
-                            (int) r.getPosition().getX() == Integer.parseInt(content[1]) && (int) r.getPosition().getY() == Integer.parseInt(content[2]));
+                    resourcesAvailable.removeIf(r -> (int) r.getPosition().getX() == Integer.parseInt(content[1])
+                            && (int) r.getPosition().getY() == Integer.parseInt(content[2]));
                 }
             }
         }

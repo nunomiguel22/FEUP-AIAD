@@ -5,7 +5,6 @@ import java.util.List;
 import agents.BaseAgent;
 import agents.ExplorerAgent;
 import agents.TransporterAgent;
-import commons.Constants;
 import environment.Map;
 import environment.Resource;
 import environment.Vec2;
@@ -58,8 +57,7 @@ public class Launcher {
             // Add explorer agents
             int explorers = map.getExplorerCoords().size();
             for (Vec2 e : map.getExplorerCoords()) {
-                ExplorerAgent explorerAgent = new ExplorerAgent(
-                        Vec2.of(e.getX(), e.getY()), map);
+                ExplorerAgent explorerAgent = new ExplorerAgent(Vec2.of(e.getX(), e.getY()), map);
                 gui.addStyle(explorerAgent);
                 String name = "Explorer" + explorers--;
                 base.registerAgent(name);
@@ -71,10 +69,9 @@ public class Launcher {
                 String name = "TPAgent" + String.valueOf(i);
                 TransporterAgent tp = new TransporterAgent(tpCoords.get(i), map);
                 gui.addStyle(tp);
-                base.registerAgent(name);
+                base.registerTransporter(name);
                 container.acceptNewAgent(name, tp).start();
             }
-
 
         } catch (StaleProxyException e) {
             e.printStackTrace();
