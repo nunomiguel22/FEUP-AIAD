@@ -37,9 +37,11 @@ public class TransporterAgent extends Agent implements SwingStyle {
     private int destinationAmount;
     private int carrying;
     private int transportedAmount;
+    private Color fillColor;
 
     public TransporterAgent(Vec2 startPos, Map map) {
         this.map = map;
+        this.fillColor = Color.RED;
         this.position = startPos;
         this.bounds = map.getBounds();
         this.direction = Vec2.getRandomDirection();
@@ -73,10 +75,12 @@ public class TransporterAgent extends Agent implements SwingStyle {
         destination = map.getBaseCoords();
         direction.setVec2(Vec2.getDirection(position, destination));
         state = States.DELIVERING;
+        this.fillColor = Color.MAGENTA;
         destinationAmount = 0;
     }
 
     private void startPatrol() {
+        this.fillColor = Color.RED;
         state = States.RANDOM;
         destination = null;
         destinationAmount = 0;
@@ -142,7 +146,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
         int x = (int) (position.getX() * scale.getX());
         int y = Constants.worldHeight - (int) (position.getY() * scale.getY());
 
-        g.setColor(Color.RED);
+        g.setColor(this.fillColor);
         g.fillOval(x, y, 10, 10);
         g.setColor(Color.WHITE);
         g.drawOval(x, y, 10, 10);
@@ -166,5 +170,9 @@ public class TransporterAgent extends Agent implements SwingStyle {
 
     public int getTotalTransportedAmount() {
         return transportedAmount;
+    }
+
+    public void setFillColor(Color clr) {
+        this.fillColor = clr;
     }
 }

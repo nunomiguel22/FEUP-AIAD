@@ -1,5 +1,7 @@
 package agents.behaviours;
 
+import java.awt.Color;
+
 import agents.TransporterAgent;
 import agents.TransporterAgent.States;
 import environment.Resource;
@@ -52,9 +54,8 @@ public class TransportContractResponder extends ContractNetResponder {
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
         ACLMessage result = accept.createReply();
         result.setPerformative(ACLMessage.CONFIRM);
-
+        tp.setFillColor(new Color(255, 87, 15));
         tp.retrieve(potentialResource);
-
         return result;
     }
 
