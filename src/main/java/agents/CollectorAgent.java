@@ -19,6 +19,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class CollectorAgent extends Agent implements SwingStyle {
     static final long serialVersionUID = 567L;
@@ -34,6 +35,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
     private Vec2 direction;
     private Vec2 destination;
     private Resource resourceToMine;
+    private ArrayList<Resource> knownResources;
     private int amountMined = 0;
 
     public CollectorAgent(Vec2 startPos, Map map) {
@@ -42,6 +44,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
         this.bounds = map.getBounds();
         this.direction = Vec2.getRandomDirection();
         this.state = States.PATROLLING;
+        this.knownResources = new ArrayList<>();
     }
 
     private Vec2 getPosition() {
@@ -64,8 +67,8 @@ public class CollectorAgent extends Agent implements SwingStyle {
             e.printStackTrace();
         }
 
-        addBehaviour(new DrivingBehaviour(this, Constants.explorerTickPeriod, position, direction, bounds));
-        addBehaviour(new CollectorBehaviour(this, 33));
+        addBehaviour(new DrivingBehaviour(this, Constants.collectorTickPeriod, position, direction, bounds));
+        addBehaviour(new CollectorBehaviour(this, Constants.collectorTickPeriod));
         addBehaviour(new ListeningBehaviour());
     }
 
@@ -92,7 +95,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
 
 
     private void patrol() {
-        direction = Vec2.getRandomDirection();
+        direction.setVec2(Vec2.getRandomDirection());
         state = States.PATROLLING;
     }
 
@@ -110,19 +113,27 @@ public class CollectorAgent extends Agent implements SwingStyle {
                 }
 
                 case MINING: {
+                    ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+
+                    AID base = new AID("Base", AID.ISLOCALNAME);
                     if (amountMined >= resourceToMine.getAmount()) {
-                        ACLMessage message = new ACLMessage(ACLMessage.INFORM);
                         String messageStr = String.format("RETRIEVE %d %d %d", amountMined, (int) destination.getX(), (int) destination.getY());
                         message.setContent(messageStr);
-                        message.addReceiver(new AID("Base", AID.ISLOCALNAME));
+                        message.addReceiver(base);
                         send(message);
-                        System.out.println("sent retrieve");
+
                         amountMined = 0;
                         resourceToMine = null;
                         destination = null;
                         patrol();
                         return;
                     }
+
+                    String messageStr = String.format("MINING %d %d", (int) destination.getX(), (int) destination.getY());
+                    message.setContent(messageStr);
+                    message.addReceiver(base);
+                    send(message);
+
                     ++amountMined;
                     break;
                 }
@@ -132,7 +143,6 @@ public class CollectorAgent extends Agent implements SwingStyle {
                         if (position.calcDistance(destination) < 0.5) {
                             direction.setVec2(new Vec2(0, 0));
                             resourceToMine = map.getResourceAt(destination);
-                            System.out.println(resourceToMine.getAmount());
                             state = States.MINING;
                             return;
                         }
@@ -159,8 +169,11 @@ public class CollectorAgent extends Agent implements SwingStyle {
                     int xCoord = Integer.parseInt(content[1]);
                     int yCoord = Integer.parseInt(content[2]);
 
+                    knownResources.add(map.getResourceAt(Vec2.of(xCoord, yCoord)));
                     destination = Vec2.of(xCoord, yCoord);
                     state = States.MOVING;
+                } else if (content[0].equals("MINING")) {
+
                 }
             } else {
                 block();
