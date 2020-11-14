@@ -14,10 +14,12 @@ public class Resource implements SwingStyle, Serializable {
     private final int size = 5;
     private final Vec2 position;
     private int amount;
+    private Color clr;
 
     public Resource(Vec2 pos, int amount) {
         this.position = pos;
         this.amount = amount;
+        this.clr = Color.DARK_GRAY;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class Resource implements SwingStyle, Serializable {
         Polygon triangle = new Polygon(new int[] { x - size, x, x + size }, new int[] { y + size, y - size, y + size },
                 3);
 
-        g.setColor(Color.DARK_GRAY);
+        g.setColor(this.clr);
         g.fillPolygon(triangle);
         g.setColor(Color.WHITE);
         g.drawPolygon(triangle);
@@ -41,5 +43,9 @@ public class Resource implements SwingStyle, Serializable {
 
     public Vec2 getPosition() {
         return position;
+    }
+
+    public void setColor(Color clr) {
+        this.clr = clr;
     }
 }

@@ -120,6 +120,7 @@ public class ExplorerAgent extends Agent implements SwingStyle {
                 ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                 String msgStr = String.format("FOUND %d %d", (int) r.getPosition().getX(),
                         (int) r.getPosition().getY());
+                r.setColor(Color.CYAN);
                 msg.setContent(msgStr);
                 msg.addReceiver(new AID("Base", AID.ISLOCALNAME));
                 send(msg);
