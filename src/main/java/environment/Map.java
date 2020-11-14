@@ -153,6 +153,16 @@ public class Map {
         return this.resources;
     }
 
+    public Resource getResourceAt(Vec2 position) {
+        for (Resource resource : resources) {
+            Vec2 resourcePosition = resource.getPosition();
+            if (resourcePosition.getX() == position.getX() && resourcePosition.getY() == position.getY())
+                return resource;
+        }
+
+        return null;
+    }
+
     public void removeResource(Resource resource) {
         this.resources.remove(resource);
         this.gui.removeStyle(resource);
