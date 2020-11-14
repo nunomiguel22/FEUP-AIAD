@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Polygon;
 import java.io.Serializable;
 
+import javax.swing.SwingUtilities;
+
 import commons.Constants;
 
 public class Resource implements SwingStyle, Serializable {
@@ -45,7 +47,12 @@ public class Resource implements SwingStyle, Serializable {
         return position;
     }
 
-    public void setColor(Color clr) {
-        this.clr = clr;
+    public void setColor(Color nclr) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                clr = nclr;
+            }
+        });
+
     }
 }

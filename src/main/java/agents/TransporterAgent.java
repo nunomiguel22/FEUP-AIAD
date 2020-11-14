@@ -12,6 +12,8 @@ import jade.domain.FIPAException;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import javax.swing.SwingUtilities;
+
 import agents.behaviours.DrivingBehaviour;
 import agents.behaviours.TransportContractResponder;
 import commons.Constants;
@@ -173,6 +175,10 @@ public class TransporterAgent extends Agent implements SwingStyle {
     }
 
     public void setFillColor(Color clr) {
-        this.fillColor = clr;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                fillColor = clr;
+            }
+        });
     }
 }

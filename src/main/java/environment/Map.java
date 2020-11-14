@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.io.*;
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+
 import ui.SwingGUI;
 
 public class Map {
@@ -165,7 +167,11 @@ public class Map {
 
     public void removeResource(Resource resource) {
         this.resources.remove(resource);
-        this.gui.removeStyle(resource);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                gui.removeStyle(resource);
+            }
+        });
     }
 
     public void setGUI(SwingGUI gui) {
