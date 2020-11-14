@@ -26,7 +26,7 @@ public class TransporterAgent extends Agent implements SwingStyle {
     }
 
     static final long serialVersionUID = 13400L;
-    static final int capacity = 100;
+    static final int capacity = 110;
 
     private States state;
     private Map map;

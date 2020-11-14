@@ -25,7 +25,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
     static final long serialVersionUID = 567L;
 
     public enum States {
-        PATROLLING, MINING, MOVING
+        PATROLLING, MINING, WAITINGFORTRANSPORT, CHECKING, MOVING
     }
 
     private States state;
@@ -35,8 +35,9 @@ public class CollectorAgent extends Agent implements SwingStyle {
     private Vec2 direction;
     private Vec2 destination;
     private Resource resourceToMine;
-    private ArrayList<Resource> knownResources;
+    private ArrayList<Resource> resourcesLeft;
     private int amountMined = 0;
+    private int tickDelay = 0;
 
     public CollectorAgent(Vec2 startPos, Map map) {
         this.map = map;
@@ -44,7 +45,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
         this.bounds = map.getBounds();
         this.direction = Vec2.getRandomDirection();
         this.state = States.PATROLLING;
-        this.knownResources = new ArrayList<>();
+        this.resourcesLeft = new ArrayList<>();
     }
 
     private Vec2 getPosition() {
@@ -94,7 +95,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
     }
 
 
-    private void patrol() {
+    private void startPatrol() {
         direction.setVec2(Vec2.getRandomDirection());
         state = States.PATROLLING;
     }
@@ -108,6 +109,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
         @Override
         protected void onTick() {
             switch (state) {
+                case WAITINGFORTRANSPORT:
                 case PATROLLING: {
                     break;
                 }
@@ -117,15 +119,15 @@ public class CollectorAgent extends Agent implements SwingStyle {
 
                     AID base = new AID("Base", AID.ISLOCALNAME);
                     if (amountMined >= resourceToMine.getAmount()) {
-                        String messageStr = String.format("RETRIEVE %d %d %d", amountMined, (int) destination.getX(), (int) destination.getY());
-                        message.setContent(messageStr);
-                        message.addReceiver(base);
-                        send(message);
+                        ++tickDelay;
+                        if (tickDelay == amountMined) {
+                            String messageStr = String.format("RETRIEVE %d %d %d", amountMined, (int) destination.getX(), (int) destination.getY());
+                            message.setContent(messageStr);
+                            message.addReceiver(base);
+                            send(message);
+                            state = States.WAITINGFORTRANSPORT;
+                        }
 
-                        amountMined = 0;
-                        resourceToMine = null;
-                        destination = null;
-                        patrol();
                         return;
                     }
 
@@ -169,12 +171,44 @@ public class CollectorAgent extends Agent implements SwingStyle {
                     int xCoord = Integer.parseInt(content[1]);
                     int yCoord = Integer.parseInt(content[2]);
 
-                    knownResources.add(map.getResourceAt(Vec2.of(xCoord, yCoord)));
-                    destination = Vec2.of(xCoord, yCoord);
-                    state = States.MOVING;
-                } else if (content[0].equals("MINING")) {
+                    Resource resource = map.getResourceAt(Vec2.of(xCoord, yCoord));
+                    resourcesLeft.add(resource);
 
-                }
+                    if (state == States.PATROLLING) {
+                        resourceToMine = resource;
+                        destination = Vec2.of(xCoord, yCoord);
+                        state = States.MOVING;
+                    }
+//                        state = States.CHECKING;
+
+                } else if (content[0].equals("TRANSPORT")) {
+                    int xCoord = Integer.parseInt(content[1]);
+                    int yCoord = Integer.parseInt(content[2]);
+                    Vec2 transportPos = Vec2.of(xCoord, yCoord);
+
+                    if (transportPos.equals(destination)) {
+                        resourcesLeft.removeIf(resource -> resource.getPosition().getX() == resourceToMine.getPosition().getX()
+                                && resource.getPosition().getY() == resourceToMine.getPosition().getY());
+                        map.removeResource(resourceToMine);
+                        amountMined = 0;
+                        tickDelay = 0;
+
+                        if (resourcesLeft.isEmpty()) {
+                            startPatrol();
+                        } else {
+                            resourceToMine = resourcesLeft.get(0);
+                            destination = resourceToMine.getPosition();
+                            state = States.MOVING;
+                            goToResource();
+                        }
+                    }
+                } // else if (content[0].equals("MINING")) {
+//                    int xCoord = Integer.parseInt(content[1]);
+//                    int yCoord = Integer.parseInt(content[2]);
+//                    Vec2 resourcePos = Vec2.of(xCoord, yCoord);
+//
+//                    if (resourcePos)
+//                }
             } else {
                 block();
             }
