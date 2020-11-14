@@ -91,7 +91,7 @@ public class ExplorerAgent extends Agent implements SwingStyle {
 
         final int range = (int) (Constants.explorerDistanceFromResource * scale.getX()) + 20;
         g.setColor(Color.YELLOW);
-        g.drawOval(x - 25, y - 25, range, range);
+        g.drawOval(x - range / 2, y - range / 2, range, range);
     }
 
     private class ExploreBehaviour extends TickerBehaviour {
