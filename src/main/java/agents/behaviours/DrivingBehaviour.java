@@ -42,15 +42,18 @@ public class DrivingBehaviour extends TickerBehaviour {
         if (position.getX() >= bounds.getX()) {
             outOfBounds = true;
             dir.setX(-1);
-        }
-        if (position.getX() <= 0)
+        } else if (position.getX() <= 0)
             outOfBounds = true;
+        else
+            dir.setX(0);
+
         if (position.getY() >= bounds.getY()) {
             outOfBounds = true;
             dir.setY(-1);
-        }
-        if (position.getY() <= 0)
+        } else if (position.getY() <= 0)
             outOfBounds = true;
+        else
+            dir.setY(0);
 
         return outOfBounds;
     }
