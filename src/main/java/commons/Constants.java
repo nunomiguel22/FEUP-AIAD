@@ -8,5 +8,6 @@ public class Constants {
 
     // Explorer agent variables
     public static final long explorerTickPeriod = 33;
+    public static final long collectorTickPeriod = explorerTickPeriod;
     public static final double explorerDistanceFromResource = 5.0;
 }
