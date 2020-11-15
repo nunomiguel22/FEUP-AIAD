@@ -63,6 +63,7 @@ public class BaseAgent extends Agent implements SwingStyle {
 
     public void endMap() {
         System.out.println("All resources collected");
+        Launcher.logOutput();
         System.exit(0);
     }
 

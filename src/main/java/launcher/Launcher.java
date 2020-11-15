@@ -2,6 +2,10 @@ package launcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import agents.BaseAgent;
 import agents.CollectorAgent;
@@ -101,6 +105,31 @@ public class Launcher {
                 return true;
         }
         return false;
+    }
+
+    public static void logOutput() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("output/log.txt"));
+            writer.append("planet explorer log\n");
+
+            for (TransporterAgent tp : transporters) {
+                String op = tp.getLocalName() + "\t";
+                op += String.valueOf(tp.getTotalTransportedAmount()) + "\n";
+                writer.append(op);
+            }
+
+            for (CollectorAgent cl : collectors) {
+                String op = cl.getLocalName() + "\t";
+                op += String.valueOf(cl.getTotalAmountMined()) + "\n";
+                writer.append(op);
+            }
+
+            writer.append("\n\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

@@ -37,6 +37,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
     private Resource resourceToMine;
     private ArrayList<Resource> resourcesLeft;
     private int amountMined = 0;
+    private int totalAmountMined = 0;
     private int tickDelay = 0;
 
     public CollectorAgent(Vec2 startPos, Map map) {
@@ -94,12 +95,14 @@ public class CollectorAgent extends Agent implements SwingStyle {
         direction.setVec2(Vec2.getDirection(position, destination));
     }
 
-
     private void startPatrol() {
         direction.setVec2(Vec2.getRandomDirection());
         state = States.PATROLLING;
     }
 
+    public int getTotalAmountMined() {
+        return this.totalAmountMined;
+    }
 
     private class CollectorBehaviour extends TickerBehaviour {
         public CollectorBehaviour(Agent a, long period) {
@@ -121,7 +124,9 @@ public class CollectorAgent extends Agent implements SwingStyle {
                     if (amountMined >= resourceToMine.getAmount()) {
                         ++tickDelay;
                         if (tickDelay == amountMined) {
-                            String messageStr = String.format("RETRIEVE %d %d %d", amountMined, (int) destination.getX(), (int) destination.getY());
+                            totalAmountMined += amountMined;
+                            String messageStr = String.format("RETRIEVE %d %d %d", amountMined,
+                                    (int) destination.getX(), (int) destination.getY());
                             message.setContent(messageStr);
                             message.addReceiver(base);
                             send(message);
@@ -131,7 +136,8 @@ public class CollectorAgent extends Agent implements SwingStyle {
                         return;
                     }
 
-                    String messageStr = String.format("MINING %d %d", (int) destination.getX(), (int) destination.getY());
+                    String messageStr = String.format("MINING %d %d", (int) destination.getX(),
+                            (int) destination.getY());
                     message.setContent(messageStr);
                     message.addReceiver(base);
                     send(message);
@@ -153,7 +159,8 @@ public class CollectorAgent extends Agent implements SwingStyle {
                     break;
                 }
 
-                default:break;
+                default:
+                    break;
             }
         }
     }
@@ -179,7 +186,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
                         destination = Vec2.of(xCoord, yCoord);
                         state = States.MOVING;
                     }
-//                        state = States.CHECKING;
+                    // state = States.CHECKING;
 
                 } else if (content[0].equals("TRANSPORT")) {
                     int xCoord = Integer.parseInt(content[1]);
@@ -187,8 +194,9 @@ public class CollectorAgent extends Agent implements SwingStyle {
                     Vec2 transportPos = Vec2.of(xCoord, yCoord);
 
                     if (transportPos.equals(destination)) {
-                        resourcesLeft.removeIf(resource -> resource.getPosition().getX() == resourceToMine.getPosition().getX()
-                                && resource.getPosition().getY() == resourceToMine.getPosition().getY());
+                        resourcesLeft.removeIf(
+                                resource -> resource.getPosition().getX() == resourceToMine.getPosition().getX()
+                                        && resource.getPosition().getY() == resourceToMine.getPosition().getY());
                         map.removeResource(resourceToMine);
                         amountMined = 0;
                         tickDelay = 0;
@@ -203,12 +211,12 @@ public class CollectorAgent extends Agent implements SwingStyle {
                         }
                     }
                 } // else if (content[0].equals("MINING")) {
-//                    int xCoord = Integer.parseInt(content[1]);
-//                    int yCoord = Integer.parseInt(content[2]);
-//                    Vec2 resourcePos = Vec2.of(xCoord, yCoord);
-//
-//                    if (resourcePos)
-//                }
+                // int xCoord = Integer.parseInt(content[1]);
+                // int yCoord = Integer.parseInt(content[2]);
+                // Vec2 resourcePos = Vec2.of(xCoord, yCoord);
+                //
+                // if (resourcePos)
+                // }
             } else {
                 block();
             }
