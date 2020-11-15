@@ -24,6 +24,7 @@ import jade.wrapper.StaleProxyException;
 public class Launcher {
     static private ArrayList<CollectorAgent> collectors;
     static private ArrayList<TransporterAgent> transporters;
+    static private double startTime;
 
     public static void main(String[] args) {
         Runtime runtime = Runtime.instance();
@@ -37,7 +38,7 @@ public class Launcher {
         ContainerController container = runtime.createMainContainer(profile);
 
         Map map = new Map("maps/mars.txt");
-
+        startTime = System.currentTimeMillis() / 1000.0;
         launchAgents(container, map);
     }
 
@@ -107,9 +108,15 @@ public class Launcher {
     }
 
     public static void logOutput() {
+        double timeElapsed = (System.currentTimeMillis() / 1000.0) - startTime;
+
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("output/log.txt"));
             writer.append("planet explorer log\n");
+            String tm = "Total Time: ";
+            tm += String.valueOf(timeElapsed);
+            tm += " seconds\n";
+            writer.append(tm);
 
             for (TransporterAgent tp : transporters) {
                 String op = tp.getLocalName() + "\t";
