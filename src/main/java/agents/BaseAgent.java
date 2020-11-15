@@ -19,6 +19,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.proto.ContractNetInitiator;
 import ui.SwingStyle;
 
 public class BaseAgent extends Agent implements SwingStyle {
@@ -28,12 +29,15 @@ public class BaseAgent extends Agent implements SwingStyle {
     private Map map;
     private ArrayList<String> agents;
     private ArrayList<String> transporters;
+    private ArrayList<Resource> futureContracts;
+    private ContractNetInitiator currectContract;
 
     public BaseAgent(Vec2 pos, Map map) {
         this.position = pos;
         this.map = map;
         this.agents = new ArrayList<String>();
         this.transporters = new ArrayList<String>();
+        this.futureContracts = new ArrayList<Resource>();
     }
 
     public void registerAgent(String name) {
@@ -87,7 +91,16 @@ public class BaseAgent extends Agent implements SwingStyle {
     }
 
     private void initiateTransportContract(Resource res) {
-        addBehaviour(new TransportContractInitiator(this, res));
+        if (TransportContractInitiator.isInContract()) {
+            if (!futureContracts.contains(res))
+                futureContracts.add(res);
+            return;
+        }
+        if (currectContract != null)
+            removeBehaviour(currectContract);
+
+        currectContract = new TransportContractInitiator(this, res);
+        addBehaviour(currectContract);
     }
 
     private class ListeningBehaviour extends CyclicBehaviour {
@@ -111,6 +124,7 @@ public class BaseAgent extends Agent implements SwingStyle {
                     int y = Integer.parseInt(info[3]);
                     Resource res = new Resource(new Vec2(x, y), amount);
                     initiateTransportContract(res);
+
                 } else {
                     // Broadcast to all agents
                     String senderName = msg.getSender().getLocalName();

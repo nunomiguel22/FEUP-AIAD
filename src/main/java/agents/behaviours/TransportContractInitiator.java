@@ -14,6 +14,11 @@ public class TransportContractInitiator extends ContractNetInitiator {
     static final long serialVersionUID = 1224434L;
     private Resource resource;
     private BaseAgent base;
+    private static boolean inContract = false;
+
+    public static boolean isInContract() {
+        return inContract;
+    }
 
     public TransportContractInitiator(BaseAgent base, Resource res) {
         super(base, new ACLMessage(ACLMessage.CFP));
@@ -22,6 +27,7 @@ public class TransportContractInitiator extends ContractNetInitiator {
     }
 
     protected Vector prepareCfps(ACLMessage cfp) {
+        inContract = true;
         Vector vec = new Vector();
 
         List<String> tps = base.getTransporterList();
@@ -38,7 +44,6 @@ public class TransportContractInitiator extends ContractNetInitiator {
         }
 
         vec.add(cfp);
-
         return vec;
     }
 
@@ -49,6 +54,11 @@ public class TransportContractInitiator extends ContractNetInitiator {
         for (Object response : responses) {
             ACLMessage received = ((ACLMessage) response);
             ACLMessage reply = ((ACLMessage) response).createReply();
+            if (received.getContent() == null) {
+                System.out.println("Failed to retrieve distance..\n");
+                reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                continue;
+            }
 
             double receivedDist = Double.parseDouble(received.getContent());
 
@@ -62,6 +72,7 @@ public class TransportContractInitiator extends ContractNetInitiator {
 
         if (closestTp != null)
             closestTp.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+        inContract = false;
     }
 
     protected void handleAllResultNotifications(Vector resultNotifications) {

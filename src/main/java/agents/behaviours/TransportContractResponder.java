@@ -26,7 +26,7 @@ public class TransportContractResponder extends ContractNetResponder {
 
         States state = tp.getTPState();
         // Already on a contract
-        if (state.equals(States.RETRIEVING)) {
+        if (state.equals(States.RETRIEVING) || state.equals(States.DELIVERING)) {
             reply.setPerformative(ACLMessage.REFUSE);
             return reply;
         }
@@ -57,6 +57,10 @@ public class TransportContractResponder extends ContractNetResponder {
         tp.setFillColor(new Color(255, 87, 15));
         tp.retrieve(potentialResource);
         return result;
+    }
+
+    protected void handleOutOfSequence(ACLMessage msg) {
+
     }
 
 }
