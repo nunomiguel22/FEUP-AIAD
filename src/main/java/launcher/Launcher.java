@@ -36,7 +36,7 @@ public class Launcher {
 
         ContainerController container = runtime.createMainContainer(profile);
 
-        Map map = new Map("maps/mars.txt");
+        Map map = new Map("maps/mars2.txt");
 
         launchAgents(container, map);
     }

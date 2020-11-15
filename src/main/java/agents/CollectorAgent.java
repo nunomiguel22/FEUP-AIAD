@@ -124,7 +124,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
                     ACLMessage message = new ACLMessage(ACLMessage.INFORM);
 
                     AID base = new AID("Base", AID.ISLOCALNAME);
-                    if (amountMined >= resourceToMine.getAmount()) {
+                    if (resourceToMine != null && amountMined >= resourceToMine.getAmount()) {
                         ++tickDelay;
                         if (tickDelay == amountMined) {
                             totalAmountMined += amountMined;
