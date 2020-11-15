@@ -1,0 +1,7 @@
+planet explorer log
+TPAgent0	150
+TPAgent1	50
+TPAgent2	100
+Collector0	300
+
+

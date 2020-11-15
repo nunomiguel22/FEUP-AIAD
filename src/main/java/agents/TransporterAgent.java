@@ -73,6 +73,10 @@ public class TransporterAgent extends Agent implements SwingStyle {
         addBehaviour(new TransportContractResponder(this));
     }
 
+    public boolean isCarrying() {
+        return this.carrying > 0;
+    }
+
     private void goToBase() {
         destination = map.getBaseCoords();
         direction.setVec2(Vec2.getDirection(position, destination));
