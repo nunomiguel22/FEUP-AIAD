@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import agents.behaviours.TransportContractInitiator;
 import commons.Constants;
+import launcher.Launcher;
+import environment.Map;
 import environment.Resource;
 import environment.Vec2;
 import jade.core.AID;
@@ -21,13 +23,15 @@ import ui.SwingStyle;
 
 public class BaseAgent extends Agent implements SwingStyle {
     static final long serialVersionUID = 134L;
-    private Vec2 position;
 
+    private Vec2 position;
+    private Map map;
     private ArrayList<String> agents;
     private ArrayList<String> transporters;
 
-    public BaseAgent(Vec2 pos) {
+    public BaseAgent(Vec2 pos, Map map) {
         this.position = pos;
+        this.map = map;
         this.agents = new ArrayList<String>();
         this.transporters = new ArrayList<String>();
     }
@@ -55,6 +59,11 @@ public class BaseAgent extends Agent implements SwingStyle {
             msg.addReceiver(new AID(agentName, AID.ISLOCALNAME));
         }
         send(msg);
+    }
+
+    public void endMap() {
+        System.out.println("All resources collected");
+        System.exit(0);
     }
 
     @Override
@@ -86,6 +95,11 @@ public class BaseAgent extends Agent implements SwingStyle {
         @Override
         public void action() {
             ACLMessage msg = receive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+
+            if (!map.hasResources()) {
+                if (!Launcher.areTransportersCarrying())
+                    endMap();
+            }
 
             if (msg != null) {
                 // Initiate contract when a collector asks for retrieval

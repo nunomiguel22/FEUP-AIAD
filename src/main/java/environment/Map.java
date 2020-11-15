@@ -185,4 +185,8 @@ public class Map {
     public Color getBGColor() {
         return this.bgColor;
     }
+
+    public boolean hasResources() {
+        return !this.resources.isEmpty();
+    }
 }

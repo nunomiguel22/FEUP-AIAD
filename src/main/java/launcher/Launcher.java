@@ -1,12 +1,12 @@
 package launcher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import agents.BaseAgent;
 import agents.CollectorAgent;
 import agents.ExplorerAgent;
 import agents.TransporterAgent;
-import commons.Constants;
 import environment.Map;
 import environment.Resource;
 import environment.Vec2;
@@ -19,8 +19,14 @@ import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
 public class Launcher {
+    static private ArrayList<CollectorAgent> collectors;
+    static private ArrayList<TransporterAgent> transporters;
+
     public static void main(String[] args) {
         Runtime runtime = Runtime.instance();
+
+        collectors = new ArrayList<CollectorAgent>();
+        transporters = new ArrayList<TransporterAgent>();
 
         Profile profile = new ProfileImpl();
         profile.setParameter("port", "8000");
@@ -49,7 +55,7 @@ public class Launcher {
                 gui.addStyle(resource);
 
             // Add Base Agent
-            BaseAgent base = new BaseAgent(map.getBaseCoords());
+            BaseAgent base = new BaseAgent(map.getBaseCoords(), map);
             gui.addStyle(base);
             container.acceptNewAgent("Base", base).start();
 
@@ -68,6 +74,7 @@ public class Launcher {
             for (int i = 0; i < tpCoords.size(); ++i) {
                 String name = "TPAgent" + String.valueOf(i);
                 TransporterAgent tp = new TransporterAgent(tpCoords.get(i), map);
+                transporters.add(tp);
                 gui.addStyle(tp);
                 base.registerTransporter(name);
                 container.acceptNewAgent(name, tp).start();
@@ -78,6 +85,7 @@ public class Launcher {
             for (int i = 0; i < collectorCoords.size(); ++i) {
                 String name = "Collector" + i;
                 CollectorAgent cla = new CollectorAgent(collectorCoords.get(i), map);
+                collectors.add(cla);
                 gui.addStyle(cla);
                 base.registerAgent(name);
                 container.acceptNewAgent(name, cla).start();
@@ -85,6 +93,14 @@ public class Launcher {
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
-
     }
+
+    public static boolean areTransportersCarrying() {
+        for (TransporterAgent tp : transporters) {
+            if (tp.isCarrying())
+                return true;
+        }
+        return false;
+    }
+
 }
