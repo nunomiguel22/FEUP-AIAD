@@ -202,13 +202,22 @@ public class CollectorAgent extends Agent implements SwingStyle {
                             goToResource();
                         }
                     }
-                } // else if (content[0].equals("MINING")) {
-//                    int xCoord = Integer.parseInt(content[1]);
-//                    int yCoord = Integer.parseInt(content[2]);
-//                    Vec2 resourcePos = Vec2.of(xCoord, yCoord);
-//
-//                    if (resourcePos)
-//                }
+                } else if (content[0].equals("MINING")) {
+                    int xCoord = Integer.parseInt(content[1]);
+                    int yCoord = Integer.parseInt(content[2]);
+                    Vec2 resourcePos = Vec2.of(xCoord, yCoord);
+
+                    if (resourcePos.equals(destination)) {
+                        resourcesLeft.removeIf(resource -> resource.getPosition().getX() == resourceToMine.getPosition().getX()
+                                && resource.getPosition().getY() == resourceToMine.getPosition().getY());
+
+                        amountMined = 0;
+                        tickDelay = 0;
+                        destination = null;
+
+                        startPatrol();
+                    }
+                }
             } else {
                 block();
             }
