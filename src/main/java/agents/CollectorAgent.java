@@ -105,6 +105,8 @@ public class CollectorAgent extends Agent implements SwingStyle {
     }
 
     private class CollectorBehaviour extends TickerBehaviour {
+        static final long serialVersionUID = 3550L;
+
         public CollectorBehaviour(Agent a, long period) {
             super(a, period);
         }
@@ -166,6 +168,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
     }
 
     private class ListeningBehaviour extends CyclicBehaviour {
+        static final long serialVersionUID = 9450L;
         private final MessageTemplate messageTemplate = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
 
         @Override
@@ -211,12 +214,12 @@ public class CollectorAgent extends Agent implements SwingStyle {
                         }
                     }
                 } // else if (content[0].equals("MINING")) {
-                // int xCoord = Integer.parseInt(content[1]);
-                // int yCoord = Integer.parseInt(content[2]);
-                // Vec2 resourcePos = Vec2.of(xCoord, yCoord);
-                //
-                // if (resourcePos)
-                // }
+                  // int xCoord = Integer.parseInt(content[1]);
+                  // int yCoord = Integer.parseInt(content[2]);
+                  // Vec2 resourcePos = Vec2.of(xCoord, yCoord);
+                  //
+                  // if (resourcePos)
+                  // }
             } else {
                 block();
             }
