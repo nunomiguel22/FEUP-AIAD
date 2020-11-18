@@ -235,9 +235,7 @@ public class CollectorAgent extends Agent implements SwingStyle {
                     if (resourcePos.equals(destination)) {
                         for (int i = 0; i < resourcesLeft.size(); ++i) {
                             Resource res = resourcesLeft.get(i);
-                            if (res == null)
-                                resourcesLeft.remove(i);
-                            else if (res == null || res.getPosition().equals(resourceToMine.getPosition()))
+                            if (res == null || res.getPosition().equals(resourceToMine.getPosition()))
                                 resourcesLeft.remove(i);
                         }
 
