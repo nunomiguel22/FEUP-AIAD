@@ -24,6 +24,7 @@ public class TransportContractInitiator extends ContractNetInitiator {
         super(base, new ACLMessage(ACLMessage.CFP));
         this.base = base;
         this.resource = res;
+
     }
 
     protected Vector prepareCfps(ACLMessage cfp) {
@@ -55,7 +56,6 @@ public class TransportContractInitiator extends ContractNetInitiator {
             ACLMessage received = ((ACLMessage) response);
             ACLMessage reply = ((ACLMessage) response).createReply();
             if (received.getContent() == null) {
-                System.out.println("Failed to retrieve distance..\n");
                 reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
                 continue;
             }

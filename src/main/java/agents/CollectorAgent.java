@@ -233,9 +233,19 @@ public class CollectorAgent extends Agent implements SwingStyle {
                     Vec2 resourcePos = Vec2.of(xCoord, yCoord);
 
                     if (resourcePos.equals(destination)) {
-                        resourcesLeft.removeIf(
-                                resource -> resource.getPosition().getX() == resourceToMine.getPosition().getX()
-                                        && resource.getPosition().getY() == resourceToMine.getPosition().getY());
+                        for (int i = 0; i < resourcesLeft.size(); ++i) {
+                            Resource res = resourcesLeft.get(i);
+                            if (res == null)
+                                resourcesLeft.remove(i);
+                            else if (res == null || res.getPosition().equals(resourceToMine.getPosition()))
+                                resourcesLeft.remove(i);
+                        }
+
+                        /*
+                         * resourcesLeft.removeIf( resource -> resource.getPosition().getX() ==
+                         * resourceToMine.getPosition().getX() && resource.getPosition().getY() ==
+                         * resourceToMine.getPosition().getY());
+                         */
 
                         amountMined = 0;
                         tickDelay = 0;

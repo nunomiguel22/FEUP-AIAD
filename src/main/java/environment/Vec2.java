@@ -52,21 +52,21 @@ public class Vec2 implements Serializable {
         return new Vec2(x, y);
     }
 
-    public void addVec2(Vec2 vec) {
+    public synchronized void addVec2(Vec2 vec) {
         if (vec == null)
             return;
         this.x += vec.x;
         this.y += vec.y;
     }
 
-    public void mulVec2(Vec2 vec) {
+    public synchronized void mulVec2(Vec2 vec) {
         if (vec == null)
             return;
         this.x *= vec.x;
         this.y *= vec.y;
     }
 
-    public void divVec2(Vec2 vec) {
+    public synchronized void divVec2(Vec2 vec) {
         if (vec == null)
             return;
         this.x /= vec.x;
@@ -81,13 +81,13 @@ public class Vec2 implements Serializable {
         return new Vec2(this.x * vec.x, this.y * vec.y);
     }
 
-    public void rotate(int degrees) {
+    public synchronized void rotate(int degrees) {
         double x2 = this.x * Math.cos(degrees) - this.y * Math.sin(degrees);
         this.y = this.x * Math.sin(degrees) - this.y * Math.cos(degrees);
         this.x = x2;
     }
 
-    public void setVec2(Vec2 vec) {
+    public synchronized void setVec2(Vec2 vec) {
         this.x = vec.x;
         this.y = vec.y;
     }

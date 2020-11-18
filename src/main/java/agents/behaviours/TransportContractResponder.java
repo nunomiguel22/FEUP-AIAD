@@ -36,6 +36,7 @@ public class TransportContractResponder extends ContractNetResponder {
             // Check if transporter has enough space
             if (tp.getCapacity() - tp.getCarrying() > amount) {
                 double distance = tp.getPosition().calcDistance(res.getPosition());
+                distance = Math.round(distance * 1000.0) / 1000.0;
                 reply.setContent(String.valueOf(distance));
                 potentialResource = res;
                 reply.setPerformative(ACLMessage.PROPOSE);
