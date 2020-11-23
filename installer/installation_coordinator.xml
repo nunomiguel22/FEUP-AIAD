@@ -50,7 +50,7 @@
 		<property name="GroovyAllJarLocation" value="${EclipsePluginsDirectory}/${Groovy_All_Jar}" />
 
 		<!-- A hidden staging dirctory to store the install files that will be deleted at cleanup -->
-		<property name="StagingArea" value="./.temp/Mars Explorer" />
+		<property name="StagingArea" value="./.temp/PlanetExplorer" />
 		<property name="StagingOptionalArea" value="./.temp" />
 		<echo message="StagingArea = ${StagingArea}" />
 		<property name="IzPackHomeDirectory" value="${EclipsePluginsDirectory}/repast.simphony.eclipse_${REPAST_VERSION}/setupfiles/IzPack" />

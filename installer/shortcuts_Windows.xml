@@ -4,10 +4,10 @@
 
   <skipIfNotSupported/>
   
-  <programGroup defaultName="Mars Explorer" location="StartMenu"/>
+  <programGroup defaultName="PlanetExplorer" location="StartMenu"/>
   
   <shortcut
-     name="Mars Explorer"
+     name="PlanetExplorer"
      programGroup="yes"
      desktop="no"
      applications="no"
@@ -17,7 +17,7 @@
      commandLine=""
      workingDirectory="$INSTALL_PATH"
      description="Model"
-     iconFile="$INSTALL_PATH\Mars Explorer\icons\model.bmp"
+     iconFile="$INSTALL_PATH\PlanetExplorer\icons\model.bmp"
      iconIndex="0"
      initialState="noShow">
      <createForPack name="Model"/>
@@ -30,7 +30,7 @@
      applications="no"
      startMenu="no"
      startup="no"
-     target="$INSTALL_PATH\Mars Explorer\docs\index.html"
+     target="$INSTALL_PATH\PlanetExplorer\docs\index.html"
      commandLine=""
 	 iconFile="%SystemRoot%\system32\SHELL32.dll"
      iconIndex="23" 
@@ -40,7 +40,7 @@
   </shortcut>
   
   <shortcut
-     name="Mars Explorer Uninstaller"
+     name="PlanetExplorer Uninstaller"
      programGroup="yes"
      desktop="no"
      applications="no"
