@@ -2,3 +2,5 @@
 *.log
 *.log.1
 *.jar
+*.properties
+*.settings
