@@ -4,11 +4,11 @@
   <styles>
     <entry>
       <string>planetExplorer.agents.BaseAgent</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>planetExplorer.ui.BaseStyle</string>
     </entry>
     <entry>
       <string>planetExplorer.agents.ExplorerAgent</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>planetExplorer.ui.ExplorerStyle</string>
     </entry>
     <entry>
       <string>planetExplorer.agents.TransporterAgent</string>

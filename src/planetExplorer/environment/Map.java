@@ -184,7 +184,7 @@ public class Map {
 
     public void removeResource(Resource resource) {
         this.resources.remove(resource);
-        //REMOVE FROM GUI
+        this.context.remove(resource);
     }
 
 
