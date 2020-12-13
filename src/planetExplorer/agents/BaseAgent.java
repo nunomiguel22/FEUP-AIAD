@@ -10,6 +10,7 @@ import planetExplorer.environment.Map;
 import planetExplorer.environment.Resource;
 import planetExplorer.environment.Vec2;
 import planetExplorer.launcher.Launcher;
+import repast.simphony.engine.environment.RunEnvironment;
 import sajas.core.AID;
 import sajas.core.Agent;
 import sajas.core.behaviours.CyclicBehaviour;
@@ -63,7 +64,7 @@ public class BaseAgent extends Agent {
     public void endMap() {
         System.out.println("All resources collected");
         Launcher.logOutput();
-        System.exit(0);
+        RunEnvironment.getInstance().endAt(RunEnvironment.getInstance().getCurrentSchedule().getTickCount()+1);
     }
 
     @Override

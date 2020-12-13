@@ -1,10 +1,8 @@
 planet explorer log
-Total Time: 30.82800006866455 seconds
-TPAgent0	170
-TPAgent1	50
-TPAgent2	50
-TPAgent3	80
-Collector0	250
-Collector1	100
+Total Time: 22.062000036239624 seconds
+TPAgent0	150
+TPAgent1	70
+TPAgent2	80
+Collector0	300
 
 

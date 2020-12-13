@@ -61,7 +61,7 @@ public class Launcher extends RepastSLauncher {
 		context.setId("PlanetExplorer");
 		this.context = context;
 		
-		map = new Map("maps/mars3.txt");
+		map = new Map("maps/mars.txt");
 		
 		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
 		this.space = spaceFactory.createContinuousSpace("space", context, 
