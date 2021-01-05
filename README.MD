@@ -32,6 +32,7 @@ For Windows:
 Part 1 adapted to repast symphony.
 
 ### Members
-Nuno Miguel Marques
-Ricardo Araújo
-Gonçalo Oliveira
+
+* Nuno Miguel Marques
+* Ricardo Araújo
+* Gonçalo Oliveira
